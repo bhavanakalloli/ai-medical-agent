@@ -1,8 +1,16 @@
 # AI Medical Supervisor Multi-Agent System
 
+![Python](https://img.shields.io/badge/Python-3.12+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![LangGraph](https://img.shields.io/badge/Multi--Agent-LangGraph-orange)
+![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-red)
+
 An AI-powered multi-agent healthcare assistant built using supervisor-driven orchestration for intelligent medical triage, specialist routing, and structured response generation.
 
+---
+
 ## Overview
+
 This project uses a supervisor agent to dynamically route medical queries to specialized agents such as:
 
 - Sleep Specialist Agent  
@@ -27,9 +35,8 @@ The system combines multi-agent reasoning, tool integration, persistent memory, 
 ---
 
 ## Architecture
-Multi-agent workflow includes:
 
-User Query → Supervisor Agent → Specialist Agent Routing → Tool Reasoning → Writing Agent → Final Response
+User Query → Supervisor Agent → Specialist Routing → Tool Reasoning → Writing Agent → Final Response
 
 Specialist agents are selected dynamically based on user intent.
 
@@ -51,16 +58,16 @@ Specialist agents are selected dynamically based on user intent.
 
 ```bash
 .
-├── main.py                    # FastAPI orchestration
+├── main.py
 ├── agents/
-│   ├── graph.py               # LangGraph routing
-│   └── nodes.py               # Supervisor + specialist logic
-├── tools/                     # Tool integrations
-├── database/database.py       # Persistence layer
-├── utils/telemetry.py         # Cost/token estimates
-├── streamlit_app.py           # Frontend UI
-├── tests/                     # Test suites
-└── EVAL.md                    # Evaluation analysis
+│   ├── graph.py
+│   └── nodes.py
+├── tools/
+├── database/database.py
+├── utils/telemetry.py
+├── streamlit_app.py
+├── tests/
+└── EVAL.md
 ```
 
 ---
@@ -68,6 +75,7 @@ Specialist agents are selected dynamically based on user intent.
 ## Setup
 
 ### Prerequisites
+
 - Python 3.12+
 - Google Gemini API Key
 
@@ -91,7 +99,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Available endpoints:
+Endpoints:
 
 - GET `/v1/health`
 - POST `/v1/execute`
@@ -106,51 +114,60 @@ Available endpoints:
 streamlit run streamlit_app.py
 ```
 
-Launches interactive medical assistant interface with:
-- Session history
-- Execution traces
+Features include:
+- Interactive medical assistant chat  
+- Session history  
+- Execution traces  
 - Response insights
 
 ---
 
 ## Testing
 
-Run all tests:
-
 ```bash
 python -m unittest -v tests.test_architecture tests.test_api
 ```
 
 Covers:
-- Graph routing logic
-- Tool trace validation
-- Fallback behavior
-- API telemetry
+- Graph routing logic  
+- Tool trace validation  
+- Fallback behavior  
+- API telemetry  
 - Retrieval behavior
 
 ---
 
-## My Contributions / Enhancements
+## Demo Preview
+
+_Add screenshots or demo GIFs here._
+
+---
+
+## Customization & Enhancements
+
 - Environment setup and deployment customization  
-- Repository curation and documentation improvements  
-- Planned future enhancements for multi-agent healthcare workflows
+- Documentation and repository improvements  
+- Planned enhancements for advanced multi-agent healthcare workflows
 
 ---
 
 ## Future Improvements
+
 - Voice-enabled medical assistant  
-- Expanded specialist agents  
-- EHR integration  
-- Multi-agent collaboration workflows
+- Additional specialist agents  
+- Electronic health record integration  
+- Advanced multi-agent collaboration
 
 ---
 
 ## Disclaimer
-This system is for educational and research purposes only.  
+
+This project is for educational and research purposes only.  
 Outputs are non-diagnostic and should not replace professional medical advice.
 
 ---
 
 ## Credits
-Original project inspired by Akash Gupta.  
-Customized, documented, and maintained by Bhavana.
+
+Original project created by Akash Gupta.  
+Adapted, documented, and enhanced by Bhavana Kalloli.
