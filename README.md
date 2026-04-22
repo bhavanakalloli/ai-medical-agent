@@ -1,64 +1,75 @@
-# Medical Supervisor Multi-Agent System
+# AI Medical Supervisor Multi-Agent System
 
-A FastAPI + LangGraph medical triage system where a Supervisor routes between specialist agents (sleep, cardiovascular, drug) and a writing agent for the final structured response.
+An AI-powered multi-agent healthcare assistant built using supervisor-driven orchestration for intelligent medical triage, specialist routing, and structured response generation.
 
-## Visual Architecture
+## Overview
+This project uses a supervisor agent to dynamically route medical queries to specialized agents such as:
 
-```mermaid
-flowchart TD
-    U[User Query] --> API[FastAPI /v1/execute]
-    API --> MEM[SQLite Memory Store]
-    API --> G[LangGraph StateGraph]
+- Sleep Specialist Agent  
+- Cardiovascular Specialist Agent  
+- Drug Interaction Agent  
+- Response Writing Agent  
 
-    G --> S[Supervisor Node]
-    S -->|route: sleep| A1[Sleep Agent]
-    S -->|route: cardiovascular| A2[Cardiovascular Agent]
-    S -->|route: drug| A3[Drug Agent]
-    S -->|route: writing| A4[Writing Agent]
-    S -->|route: finish| END[Final Response]
+The system combines multi-agent reasoning, tool integration, persistent memory, and an interactive frontend for healthcare-oriented assistance.
 
-    A1 --> S
-    A2 --> T1[cardio_mock_lookup tool]
-    T1 --> A2
-    A2 --> S
+---
 
-    A3 --> T2[extract_symptoms_from_conversation]
-    A3 --> T3[wikipedia_drug_lookup]
-    T2 --> A3
-    T3 --> A3
-    A3 --> S
+## Key Features
 
-    A4 --> S
-    END --> API
-    API --> R[Response: final_report + route_history + execution_trace + token_usage]
-```
+- Supervisor-based agent routing using LangGraph  
+- Tool-augmented specialist reasoning with fallback support  
+- Session-based conversation memory using SQLite  
+- Token and cost telemetry tracking  
+- Interactive Streamlit chat interface  
+- FastAPI backend for scalable API access  
+- Safety-oriented structured medical guidance
 
-## What This Project Does
+---
 
-- Uses a Supervisor to decide which specialized agent should run next.
-- Supports tool-augmented specialist reasoning (bind_tools with fallback).
-- Returns execution trace and estimated token/cost telemetry.
-- Persists conversation context in SQLite with session-based retrieval.
-- Provides a polished Streamlit chat interface for easier demo and exploration.
+## Architecture
+Multi-agent workflow includes:
+
+User Query → Supervisor Agent → Specialist Agent Routing → Tool Reasoning → Writing Agent → Final Response
+
+Specialist agents are selected dynamically based on user intent.
+
+---
+
+## Tech Stack
+
+- Python  
+- FastAPI  
+- LangGraph  
+- Streamlit  
+- SQLite  
+- Google Gemini API  
+- AI Agent Tooling
+
+---
 
 ## Project Structure
 
-- `main.py`: FastAPI app and `/v1/execute` orchestration.
-- `agents/graph.py`: LangGraph construction and routing edges.
-- `agents/nodes.py`: Supervisor + specialist node logic.
-- `tools/`: mock and external tool integrations.
-- `database/database.py`: SQLite persistence layer.
-- `utils/telemetry.py`: token/cost estimation utilities.
-- `streamlit_app.py`: UI frontend for the API.
-- `tests/`: architecture and API test suite.
-- `Eval.md`: evaluation and stress-test analysis.
+```bash
+.
+├── main.py                    # FastAPI orchestration
+├── agents/
+│   ├── graph.py               # LangGraph routing
+│   └── nodes.py               # Supervisor + specialist logic
+├── tools/                     # Tool integrations
+├── database/database.py       # Persistence layer
+├── utils/telemetry.py         # Cost/token estimates
+├── streamlit_app.py           # Frontend UI
+├── tests/                     # Test suites
+└── EVAL.md                    # Evaluation analysis
+```
 
-## How To Start
+---
 
-## 1) Prerequisites
+## Setup
 
+### Prerequisites
 - Python 3.12+
-- A Google API key for Gemini
+- Google Gemini API Key
 
 Set environment variable:
 
@@ -66,62 +77,80 @@ Set environment variable:
 export GOOGLE_API_KEY="your_key_here"
 ```
 
-## 2) Install Dependencies
-
-If you already have a virtual environment in `env/`:
+Install dependencies:
 
 ```bash
-source env/bin/activate
 pip install -r requirements.txt
 ```
 
-## 3) Run FastAPI Server
+---
+
+## Run Backend
 
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-API endpoints:
+Available endpoints:
 
-- `GET /v1/health`
-- `POST /v1/execute`
-- `GET /v1/session/{session_id}`
-- `GET /v1/sessions`
+- GET `/v1/health`
+- POST `/v1/execute`
+- GET `/v1/session/{session_id}`
+- GET `/v1/sessions`
 
-## 4) Run Streamlit Interface
+---
 
-In another terminal:
+## Run Frontend
 
 ```bash
-source env/bin/activate
 streamlit run streamlit_app.py
 ```
 
-This UI gives a cleaner interactive experience, including session browsing and execution insights.
+Launches interactive medical assistant interface with:
+- Session history
+- Execution traces
+- Response insights
+
+---
 
 ## Testing
 
-Run the full tests:
+Run all tests:
 
 ```bash
-./env/bin/python -m unittest -v tests.test_architecture tests.test_api
+python -m unittest -v tests.test_architecture tests.test_api
 ```
 
-Or run module-wise:
+Covers:
+- Graph routing logic
+- Tool trace validation
+- Fallback behavior
+- API telemetry
+- Retrieval behavior
 
-```bash
-./env/bin/python -m unittest -v tests.test_architecture
-./env/bin/python -m unittest -v tests.test_api
-```
+---
 
-The tests cover:
+## My Contributions / Enhancements
+- Environment setup and deployment customization  
+- Repository curation and documentation improvements  
+- Planned future enhancements for multi-agent healthcare workflows
 
-- Graph routing behavior and loop guards
-- Tool trace integration
-- Writing/fallback behavior
-- API telemetry and retrieval behavior
+---
 
-## Notes
+## Future Improvements
+- Voice-enabled medical assistant  
+- Expanded specialist agents  
+- EHR integration  
+- Multi-agent collaboration workflows
 
-- Token and cost values are estimated (heuristic), not billing-exact.
-- Medical output is non-diagnostic and includes safety-oriented guidance.
+---
+
+## Disclaimer
+This system is for educational and research purposes only.  
+Outputs are non-diagnostic and should not replace professional medical advice.
+
+---
+
+## Credits
+Original project inspired by Akash Gupta.  
+Customized, documented, and maintained by Bhavana.
