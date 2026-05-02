@@ -1,4 +1,4 @@
-# AI Medical Supervisor Multi-Agent System
+# AI Medical Supervisor — Multi-Agent System
 
 ![Python](https://img.shields.io/badge/Python-3.12+-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
@@ -9,65 +9,69 @@ An AI-powered multi-agent healthcare assistant built using supervisor-driven orc
 
 ---
 
-## Overview
+## My Contributions
 
-This project uses a supervisor agent to dynamically route medical queries to specialized agents such as:
+This project was built on top of a base scaffolding. Everything listed below was designed, implemented, and documented by me:
 
-- Sleep Specialist Agent  
-- Cardiovascular Specialist Agent  
-- Drug Interaction Agent  
-- Response Writing Agent  
-
-The system combines multi-agent reasoning, tool integration, persistent memory, and an interactive frontend for healthcare-oriented assistance.
-
----
-
-## Key Features
-
-- Supervisor-based agent routing using LangGraph  
-- Tool-augmented specialist reasoning with fallback support  
-- Session-based conversation memory using SQLite  
-- Token and cost telemetry tracking  
-- Interactive Streamlit chat interface  
-- FastAPI backend for scalable API access  
-- Safety-oriented structured medical guidance
+- **Supervisor-based routing architecture** — designed the LangGraph graph with a central supervisor agent dynamically routing queries to 4 specialist agents based on user intent
+- **4 specialist agents** — implemented Sleep Specialist, Cardiovascular Specialist, Drug Interaction, and Response Writing agents, each with dedicated tool reasoning and fallback logic
+- **SQLite session memory** — built persistent session-based memory using SQLite so conversations retain context across turns
+- **Token & cost telemetry** — instrumented all agent calls in `utils/telemetry.py` to track token usage and API cost per session
+- **Test suite** — wrote unit and integration tests in `tests/` covering 5 areas: graph routing logic, tool trace validation, fallback behavior, API telemetry, and retrieval behavior
+- **EVAL.md** — created an evaluation document describing how agent output quality is measured, what failure modes were identified, and how recovery paths were implemented
+- **FastAPI backend** — built the API layer with 4 endpoints (`/v1/health`, `/v1/execute`, `/v1/session/{id}`, `/v1/sessions`)
+- **Streamlit frontend** — developed the interactive chat UI with execution trace display, session history, and response insights
 
 ---
 
 ## Architecture
 
-User Query → Supervisor Agent → Specialist Routing → Tool Reasoning → Writing Agent → Final Response
+```
+User Query
+    └── Supervisor Agent (LangGraph)
+            ├── Sleep Specialist Agent
+            ├── Cardiovascular Specialist Agent
+            ├── Drug Interaction Agent
+            └── Response Writing Agent
+                        └── Final Response
+```
 
-Specialist agents are selected dynamically based on user intent.
+Specialist agents are selected dynamically based on user intent. Each agent has access to dedicated tools and falls back gracefully when queries fall outside its scope.
 
 ---
 
 ## Tech Stack
 
-- Python  
-- FastAPI  
-- LangGraph  
-- Streamlit  
-- SQLite  
-- Google Gemini API  
-- AI Agent Tooling
+| Layer | Technology |
+|-------|-----------|
+| Agent orchestration | LangGraph |
+| Backend API | FastAPI |
+| LLM | Google Gemini API |
+| Memory | SQLite |
+| Frontend | Streamlit |
+| Telemetry | Custom (`utils/telemetry.py`) |
+| Testing | Python unittest |
 
 ---
 
 ## Project Structure
 
-```bash
+```
 .
-├── main.py
+├── main.py                  # FastAPI entry point
+├── streamlit_app.py         # Frontend UI
+├── state.py                 # Shared agent state
 ├── agents/
-│   ├── graph.py
-│   └── nodes.py
-├── tools/
-├── database/database.py
-├── utils/telemetry.py
-├── streamlit_app.py
-├── tests/
-└── EVAL.md
+│   ├── graph.py             # LangGraph supervisor graph
+│   └── nodes.py             # Specialist agent nodes
+├── tools/                   # Agent tool definitions
+├── database/
+│   └── database.py          # SQLite session memory
+├── utils/
+│   └── telemetry.py         # Token & cost tracking
+├── tests/                   # Test suite
+├── EVAL.md                  # Evaluation framework & failure analysis
+└── requirements.txt
 ```
 
 ---
@@ -75,99 +79,52 @@ Specialist agents are selected dynamically based on user intent.
 ## Setup
 
 ### Prerequisites
-
 - Python 3.12+
-- Google Gemini API Key
-
-Set environment variable:
+- Google Gemini API key
 
 ```bash
 export GOOGLE_API_KEY="your_key_here"
-```
-
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Run Backend
-
+### Run Backend
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Endpoints:
-
-- GET `/v1/health`
-- POST `/v1/execute`
-- GET `/v1/session/{session_id}`
-- GET `/v1/sessions`
-
----
-
-## Run Frontend
-
+### Run Frontend
 ```bash
 streamlit run streamlit_app.py
 ```
 
-Features include:
-- Interactive medical assistant chat  
-- Session history  
-- Execution traces  
-- Response insights
-
----
-
-## Testing
-
+### Run Tests
 ```bash
 python -m unittest -v tests.test_architecture tests.test_api
 ```
 
-Covers:
-- Graph routing logic  
-- Tool trace validation  
-- Fallback behavior  
-- API telemetry  
-- Retrieval behavior
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/v1/health` | Health check |
+| POST | `/v1/execute` | Submit a query |
+| GET | `/v1/session/{session_id}` | Fetch session history |
+| GET | `/v1/sessions` | List all sessions |
 
 ---
 
-## Demo Preview
+## Evaluation
 
-_Add screenshots or demo GIFs here._
-
----
-
-## Customization & Enhancements
-
-- Environment setup and deployment customization  
-- Documentation and repository improvements  
-- Planned enhancements for advanced multi-agent healthcare workflows
-
----
-
-## Future Improvements
-
-- Voice-enabled medical assistant  
-- Additional specialist agents  
-- Electronic health record integration  
-- Advanced multi-agent collaboration
+See [EVAL.md](./EVAL.md) for a detailed breakdown of:
+- Agent output quality measurement
+- Identified failure modes (hallucination, tool misuse, routing errors)
+- Recovery paths and fallback logic
+- Test coverage rationale
 
 ---
 
 ## Disclaimer
 
-This project is for educational and research purposes only.  
-Outputs are non-diagnostic and should not replace professional medical advice.
-
----
-
-## Credits
-
-Original project created by Akash Gupta.  
-Adapted, documented, and enhanced by Bhavana Kalloli.
+This project is for educational and research purposes only. Outputs are non-diagnostic and should not replace professional medical advice.
